@@ -19,13 +19,14 @@ route.get("/", auth, async (req, res) => {
 //adding a new note
 route.post("/add",auth, async (req, res) => {
   try {
+      //title and content of the new note
     const { title, content } = req.body;
     const note = new NoteModel({ title, content, author:req.user._id })
     const user =await UserModel.findOne({_id:req.user._id})
     user.note=[...user.note,note._id]
     await note.save()
     await user.save()
-    res.send(user)
+    res.send(note)
 
   } catch (e) {
     console.log(e);
@@ -34,19 +35,33 @@ route.post("/add",auth, async (req, res) => {
 });
 //
 
-//login a user
-route.post("/login", async (req, res) => {
+//delete a note
+route.delete("/delete",auth, async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const user = await UserModel.findOne({ email });
-    if (!user) throw "invalid email";
-    const isCorrect = await bcrypt.compare(password, user.password);
-    if (isCorrect) {
-      res.header("x-token", user.generateToken()).send(user);
-    } else throw "invalid password";
+      //note id to be deleted
+      const {_id}=req.body
+      const note =await NoteModel.findOneAndDelete({_id});
+      const user = await UserModel.findById({_id:req.user._id})
+      user.note.pull(_id)
+      user.save()
+      note.save()
+      res.send(user.note)
+    
   } catch (e) {
     res.send(e);
   }
 });
+
+//update a note
+route.put("/update",auth, async (req, res) => {
+    try {
+        //note id to be updated
+        const {_id,title,content}=req.body
+        const note =await NoteModel.findOneAndUpdate({_id},{title,content},{new:true});
+        res.send(note)
+    } catch (e) {
+      res.send(e);
+    }
+  });
 
 module.exports = route;

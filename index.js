@@ -5,6 +5,7 @@ const config = require('config')
 require('./models/UserModel')
 require('./models/NotesModel')
 const userRoute = require('./Router/UserRoute')
+const NoteRoute = require('./Router/NoteRoute')
 
 
 //database connection
@@ -16,5 +17,6 @@ mongoose.connect(mongoURI,{useNewUrlParser: true,useUnifiedTopology: true,useCre
 
 
 app.use('/user',userRoute)
+app.use('/note',NoteRoute)
 const port = process.env.PORT || 4000
 app.listen(port,()=>console.log('listening at ',port))

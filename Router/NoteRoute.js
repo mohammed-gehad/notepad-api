@@ -2,29 +2,31 @@ const express = require("express");
 const route = express.Router();
 route.use(express.json());
 const mongoose = require("mongoose");
+const NoteModel = mongoose.model("Note");
 const UserModel = mongoose.model("User");
-const bcrypt = require("bcrypt");
 //auth is a middleware for verifying the token
 const auth = require("../middleware/auth");
 
 route.get("/", auth, async (req, res) => {
   try {
-    const users = await UserModel.find().populate('note',['title' , 'content']);
-    res.send(users);
+    const notes = await NoteModel.find().populate('author',['username' , 'email']);
+    res.send(notes);
   } catch (e) {
     res.send(e);
   }
 });
 
-//registering a new user
-route.post("/register", async (req, res) => {
+//adding a new note
+route.post("/add",auth, async (req, res) => {
   try {
-    const { username, email, password } = req.body;
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    const user = new UserModel({ username, email, password: hashedPassword });
-    await user.save();
-    res.header("x-token", user.generateToken()).send(user);
+    const { title, content } = req.body;
+    const note = new NoteModel({ title, content, author:req.user._id })
+    const user =await UserModel.findOne({_id:req.user._id})
+    user.note=[...user.note,note._id]
+    await note.save()
+    await user.save()
+    res.send(user)
+
   } catch (e) {
     console.log(e);
     res.send(e);

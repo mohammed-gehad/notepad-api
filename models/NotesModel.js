@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
-    maxlength: 20,
+    maxlength: 255,
     minlength: 3
   },
   content: {

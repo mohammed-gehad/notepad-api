@@ -3,14 +3,16 @@ const app = express()
 const mongoose = require('mongoose')
 const config = require('config')
 require('./models/UserModel')
+require('./models/NotesModel')
 const userRoute = require('./Router/UserRoute')
+
 
 //database connection
 const mongoURI = `mongodb+srv://mohammed:${config.get('MongoPassword')}@cluster0-mpwkt.mongodb.net/test?retryWrites=true&w=majority`
 mongoose.connect(mongoURI,{useNewUrlParser: true,useUnifiedTopology: true,useCreateIndex:true})
 .then(console.log('connected to DB'))
 .catch((e)=>console.log(e))
-//database connection
+//
 
 
 app.use('/user',userRoute)

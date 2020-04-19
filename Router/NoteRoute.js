@@ -7,17 +7,24 @@ const UserModel = mongoose.model("User");
 //auth is a middleware for verifying the token
 const auth = require("../middleware/auth");
 
+//getting all notes || getting note by id
+//depending on req.body
 route.get("/", auth, async (req, res) => {
+    let notes
   try {
-    const notes = await NoteModel.find().populate('author',['username' , 'email']);
+    const {_id} = req.body
+    if(_id) notes = await NoteModel.find({_id}).populate('author',['username' , 'email']);
+    else notes = await NoteModel.find().populate('author',['username' , 'email']);
     res.send(notes);
   } catch (e) {
     res.send(e);
   }
 });
 
+
+
 //adding a new note
-route.post("/add",auth, async (req, res) => {
+route.post("/",auth, async (req, res) => {
   try {
       //title and content of the new note
     const { title, content } = req.body;
@@ -36,7 +43,7 @@ route.post("/add",auth, async (req, res) => {
 //
 
 //delete a note
-route.delete("/delete",auth, async (req, res) => {
+route.delete("/",auth, async (req, res) => {
   try {
       //note id to be deleted
       const {_id}=req.body
@@ -53,7 +60,7 @@ route.delete("/delete",auth, async (req, res) => {
 });
 
 //update a note
-route.put("/update",auth, async (req, res) => {
+route.put("/",auth, async (req, res) => {
     try {
         //note id to be updated
         const {_id,title,content}=req.body

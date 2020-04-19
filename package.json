@@ -26,5 +26,8 @@
     "mongoose": "^5.9.9",
     "nodemon": "^2.0.3",
     "validator": "^13.0.0"
+  },
+  "devDependencies": {
+    "ngrok": "^3.2.7"
   }
 }

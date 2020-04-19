@@ -24,7 +24,7 @@ route.post("/register", async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, salt);
     const user = new UserModel({ username, email, password: hashedPassword });
     await user.save();
-    res.header("x-token", user.generateToken()).send(user);
+    res.header("token", user.generateToken()).send(user);
   } catch (e) {
     console.log(e);
     res.send(e);
@@ -40,8 +40,18 @@ route.post("/login", async (req, res) => {
     if (!user) throw "invalid email";
     const isCorrect = await bcrypt.compare(password, user.password);
     if (isCorrect) {
-      res.header("x-token", user.generateToken()).send(user);
+      res.header("token", user.generateToken()).send(user);
     } else throw "invalid password";
+  } catch (e) {
+    res.send(e);
+  }
+});
+
+//return users info
+route.post("/me",auth, async (req, res) => {
+  try {
+    const user = await UserModel.findById({ _id:req.user._id });
+    res.header("token", user.generateToken()).send(user);
   } catch (e) {
     res.send(e);
   }

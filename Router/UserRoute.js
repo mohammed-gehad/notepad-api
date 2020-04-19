@@ -36,7 +36,7 @@ route.post("/register", async (req, res) => {
 route.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await UserModel.findOne({ email });
+    const user = await UserModel.findOne({ email:email.toLowerCase() });
     if (!user) throw "invalid email";
     const isCorrect = await bcrypt.compare(password, user.password);
     if (isCorrect) {

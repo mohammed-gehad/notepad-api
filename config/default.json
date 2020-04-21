@@ -1,0 +1,4 @@
+{
+    "MongoPassword":"mohammedPassword",
+    "jwtSecret":"mohammedPassword"
+}

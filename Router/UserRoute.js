@@ -6,6 +6,7 @@ const UserModel = mongoose.model("User");
 const bcrypt = require("bcrypt");
 //auth is a middleware for verifying the token
 const auth = require("../middleware/auth");
+const _ = require('lodash')
 
 route.get("/", auth, async (req, res) => {
   try {
@@ -26,8 +27,7 @@ route.post("/register", async (req, res) => {
     await user.save();
     res.header("token", user.generateToken()).send(user);
   } catch (e) {
-    console.log(e);
-    res.send(e);
+    res.send(e._message);
   }
 });
 //
@@ -48,7 +48,7 @@ route.post("/login", async (req, res) => {
 });
 
 //return users info
-route.post("/me",auth, async (req, res) => {
+route.get("/me",auth, async (req, res) => {
   try {
     const user = await UserModel.findById({ _id:req.user._id });
     res.header("token", user.generateToken()).send(user);
@@ -57,4 +57,10 @@ route.post("/me",auth, async (req, res) => {
   }
 });
 
+// getting users notes
+route.get('/notes',auth, async(req,res)=>{
+  const response = await UserModel.findOne({_id:req.user._id},'note -_id').populate('note')
+  const sorted = _.orderBy(response.note,'date','desc')
+  res.send(sorted)
+})
 module.exports = route;

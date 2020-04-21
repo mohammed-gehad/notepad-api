@@ -7,13 +7,11 @@ const UserModel = mongoose.model("User");
 //auth is a middleware for verifying the token
 const auth = require("../middleware/auth");
 
-//getting all notes || getting note by id
-//depending on req.body
-route.get("/", auth, async (req, res) => {
+// getting note by id
+route.get("/:id", auth, async (req, res) => {
     let notes
   try {
-    const {_id} = req.body
-    if(_id) notes = await NoteModel.find({_id}).populate('author',['username' , 'email']);
+    if(_id) notes = await NoteModel.find({_id:req.params.id}).populate('author',['username' , 'email']);
     else notes = await NoteModel.find().populate('author',['username' , 'email']);
     res.send(notes);
   } catch (e) {

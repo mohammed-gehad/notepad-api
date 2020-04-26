@@ -7,6 +7,8 @@ require('./models/UserModel')
 require('./models/NotesModel')
 const userRoute = require('./Router/UserRoute')
 const NoteRoute = require('./Router/NoteRoute')
+const helmet = require('helmet')
+const compression = require('compression')
 
 
 
@@ -17,7 +19,8 @@ mongoose.connect(mongoURI,{useNewUrlParser: true,useUnifiedTopology: true,useCre
 .catch((e)=>console.log(e))
 //
 
-
+app.use(helmet())
+app.use(compression())
 app.use('/user',userRoute)
 app.use('/note',NoteRoute)
 

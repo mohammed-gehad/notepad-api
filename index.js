@@ -13,7 +13,7 @@ const compression = require('compression')
 
 
 //database connection
-const mongoURI = `mongodb+srv://mohammed:${config.get('MongoPassword')}@cluster0-mpwkt.mongodb.net/test?retryWrites=true&w=majority`
+const mongoURI = `mongodb+srv://mohammed:${process.env.MongoPassword}@cluster0-mpwkt.mongodb.net/test?retryWrites=true&w=majority`
 mongoose.connect(mongoURI,{useNewUrlParser: true,useUnifiedTopology: true,useCreateIndex:true , useFindAndModify: false })
 .then(console.log('connected to DB'))
 .catch((e)=>console.log(e))

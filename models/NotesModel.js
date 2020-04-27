@@ -28,4 +28,14 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.pre('save', function(next) {
+  if(!this.title){
+    this.title='no title'
+  }
+  if(!this.content){
+    this.content='no content'
+  }
+  next();
+});
+
 mongoose.model("Note", userSchema);

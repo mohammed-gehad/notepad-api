@@ -59,8 +59,8 @@ route.get("/me",auth, async (req, res) => {
 
 // getting users notes
 route.get('/notes',auth, async(req,res)=>{
-  const response = await UserModel.findOne({_id:req.user._id},'note -_id').populate('note')
-  const sorted = _.orderBy(response.note,'date','desc')
-  res.send(sorted)
+  const response = await UserModel.findOne({_id:req.user._id},'note -_id').populate({path:'note',options:{sort:{date:-1}}})
+  //const sorted = _.orderBy(response.note,'date','desc')
+  res.send(response.note)
 })
 module.exports = route;

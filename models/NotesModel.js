@@ -6,14 +6,19 @@ const config = require("config");
 const userSchema = new mongoose.Schema({
   title: {
     type: String,
-    required: true,
+    required: function(){
+      if(this.content)return false
+       return true
+    },
     maxlength: 255,
     minlength: 3
   },
   content: {
     type: String,
-    required: true
-  },
+    required: function(){
+      if(this.title)return false
+       return true
+    },  },
   date: {
     type: Date,
     default: Date.now

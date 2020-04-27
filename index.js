@@ -1,4 +1,4 @@
-const ngrok = require('ngrok')
+// const ngrok = require('ngrok')
 const express = require('express')
 const app = express()
 const mongoose = require('mongoose')
@@ -27,10 +27,10 @@ const port = process.env.PORT || 3000
 app.listen(port,()=>console.log('listening at ',port))
 
 
-const ngrokConnect = async () =>{
-  const url = await ngrok.connect(port);
-  console.log(url)
-}
-ngrokConnect()
+// const ngrokConnect = async () =>{
+//   const url = await ngrok.connect(port);
+//   console.log(url)
+// }
+// ngrokConnect()
 
 

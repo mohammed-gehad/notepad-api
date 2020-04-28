@@ -29,10 +29,10 @@ route.get("/:id", auth, async (req, res) => {
 route.post("/", auth, async (req, res) => {
   try {
     //title and content of the new note
-    const { title, content } = req.body;
-    const note = new NoteModel({ title, content, author: req.user._id });
+    const { title, content,color } = req.body;
+    const note = new NoteModel({ title, content, author: req.user._id ,color});
     const user = await UserModel.findOne({ _id: req.user._id });
-    user.note = [...user.note, note._id];
+    user.note = [note._id,...user.note ];
     await note.save();
     await user.save();
     res.send(note);
@@ -67,10 +67,10 @@ route.delete("/:id", auth, async (req, res) => {
 route.put("/", auth, async (req, res) => {
   try {
     //note id to be updated
-    const { _id, title, content } = req.body;
+    const { _id, title, content ,color} = req.body;
     const note = await NoteModel.findOneAndUpdate(
       { _id },
-      { title, content },
+      { title, content,color },
       { new: true }
     );
     res.send(note);

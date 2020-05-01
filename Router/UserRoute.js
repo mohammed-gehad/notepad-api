@@ -37,7 +37,7 @@ route.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await UserModel.findOne({ email: email.toLowerCase() });
-    if (!user) throw "invalid email";
+    if (!user) throw { message: "invalid email", username: "" };
     const isCorrect = await bcrypt.compare(password, user.password);
     if (isCorrect) {
       res.header("token", user.generateToken()).send(user);

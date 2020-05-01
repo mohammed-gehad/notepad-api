@@ -6,11 +6,11 @@ const UserModel = mongoose.model("User");
 const bcrypt = require("bcrypt");
 //auth is a middleware for verifying the token
 const auth = require("../middleware/auth");
-const _ = require('lodash')
+const _ = require("lodash");
 
 route.get("/", auth, async (req, res) => {
   try {
-    const users = await UserModel.find().populate('note',['title' , 'content']);
+    const users = await UserModel.find().populate("note", ["title", "content"]);
     res.send(users);
   } catch (e) {
     res.send(e);
@@ -36,21 +36,21 @@ route.post("/register", async (req, res) => {
 route.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-    const user = await UserModel.findOne({ email:email.toLowerCase() });
+    const user = await UserModel.findOne({ email: email.toLowerCase() });
     if (!user) throw "invalid email";
     const isCorrect = await bcrypt.compare(password, user.password);
     if (isCorrect) {
       res.header("token", user.generateToken()).send(user);
-    } else throw "invalid password";
+    } else throw { message: "invalid password", username: user.username };
   } catch (e) {
     res.send(e);
   }
 });
 
 //return users info
-route.get("/me",auth, async (req, res) => {
+route.get("/me", auth, async (req, res) => {
   try {
-    const user = await UserModel.findById({ _id:req.user._id });
+    const user = await UserModel.findById({ _id: req.user._id });
     res.header("token", user.generateToken()).send(user);
   } catch (e) {
     res.send(e);
@@ -58,9 +58,12 @@ route.get("/me",auth, async (req, res) => {
 });
 
 // getting users notes
-route.get('/notes',auth, async(req,res)=>{
-  const response = await UserModel.findOne({_id:req.user._id},'note -_id').populate({path:'note',options:{sort:{date:-1}}})
+route.get("/notes", auth, async (req, res) => {
+  const response = await UserModel.findOne(
+    { _id: req.user._id },
+    "note -_id"
+  ).populate({ path: "note", options: { sort: { date: -1 } } });
   //const sorted = _.orderBy(response.note,'date','desc')
-  res.send(response.note)
-})
+  res.send(response.note);
+});
 module.exports = route;
